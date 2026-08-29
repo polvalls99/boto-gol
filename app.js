@@ -1,9 +1,8 @@
 "use strict";
 
 const $ = (sel) => document.querySelector(sel);
-const audio = $("#player");
-
 const SOUNDS = (window.SOUNDS || []).map((s) => ({ ...s }));
+const nameOf = (f) => (SOUNDS.find((s) => s.file === f) || {}).name || f || "";
 
 const state = {
   playing: false,
@@ -11,10 +10,8 @@ const state = {
   volume: 60,
   activeFile: null,   // himne fix (quan NO és aleatori)
   currentFile: null,  // el que sona ara
-  ready: SOUNDS.length > 0,
+  ready: false,       // sons descodificats a memòria
 };
-
-const nameOf = (f) => (SOUNDS.find((s) => s.file === f) || {}).name || f || "";
 
 function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (_) {} }
 
@@ -26,10 +23,89 @@ function toast(msg) {
   toast._t = setTimeout(() => t.classList.remove("show"), 2800);
 }
 
+/* ================================================================= àudio
+   Web Audio API: descodifiquem els sons a memòria en obrir l'app i els
+   reproduïm amb latència zero. El volum va per un GainNode (funciona a iOS,
+   on `audio.volume` s'ignora). */
+const AC = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+let gain = null;
+let currentSrc = null;
+const buffers = new Map();      // file -> AudioBuffer
+
+function audioInit() {
+  if (actx || !AC) return;
+  actx = new AC();
+  gain = actx.createGain();
+  gain.gain.value = state.volume / 100;
+  gain.connect(actx.destination);
+}
+
+function audioResume() {
+  audioInit();
+  if (actx && actx.state === "suspended") actx.resume().catch(() => {});
+}
+
+function decode(arrayBuffer) {
+  return new Promise((resolve, reject) => {
+    const p = actx.decodeAudioData(arrayBuffer, resolve, reject);
+    if (p && typeof p.then === "function") p.then(resolve, reject);
+  });
+}
+
+async function loadSounds() {
+  audioInit();
+  if (!actx) { state.ready = false; render(); return; }
+  await Promise.all(SOUNDS.map(async (s) => {
+    try {
+      const arr = await fetch(s.file).then((r) => r.arrayBuffer());
+      buffers.set(s.file, await decode(arr));
+    } catch (_) { /* aquest himne no s'ha pogut carregar */ }
+  }));
+  state.ready = buffers.size > 0;
+  render();
+}
+
+function stopSrc() {
+  if (currentSrc) {
+    try { currentSrc.onended = null; currentSrc.stop(); } catch (_) {}
+    currentSrc = null;
+  }
+}
+
+function playGoal() {
+  const file = pickFile();
+  if (!file) { toast("No hi ha himnes"); return; }
+  audioResume();
+  if (!buffers.has(file)) { toast("Encara carregant l'himne…"); return; }
+  stopSrc();
+  const src = actx.createBufferSource();
+  src.buffer = buffers.get(file);
+  src.connect(gain);
+  src.onended = () => {
+    if (currentSrc === src) {
+      currentSrc = null;
+      state.playing = false;
+      state.currentFile = null;
+      render();
+    }
+  };
+  src.start();
+  currentSrc = src;
+  state.currentFile = file;
+  state.playing = true;
+  render();
+}
+
+function stopGoal() {
+  stopSrc();
+  state.playing = false;
+  state.currentFile = null;
+  render();
+}
+
 /* ------------------------------------------------------------------ render */
 function render() {
-  document.body.classList.toggle("offline", !state.ready);
-
   $("#led-so").className = "led " + (state.ready ? "led-green" : "led-off");
   $("#led-rnd").className = "led " + (state.random ? "led-amber" : "led-off");
   $("#led-air").className = "led " + (state.playing ? "led-red" : "led-off");
@@ -41,7 +117,7 @@ function render() {
 
   $("#bt-name").textContent = state.playing
     ? "▶ " + nameOf(state.currentFile)
-    : (state.ready ? "A punt" : "Sense himnes");
+    : (!SOUNDS.length ? "Sense himnes" : (state.ready ? "A punt" : "Carregant…"));
 
   $("#sound-mode").textContent = state.random
     ? "ALEATORI"
@@ -69,7 +145,6 @@ function fillSelect() {
   render();
 }
 
-/* ------------------------------------------------------------------ àudio */
 function pickFile() {
   if (!SOUNDS.length) return null;
   if (!state.random) return state.activeFile || SOUNDS[0].file;
@@ -77,32 +152,6 @@ function pickFile() {
   const from = pool.length ? pool : SOUNDS;
   return from[Math.floor(Math.random() * from.length)].file;
 }
-
-function playGoal() {
-  const file = pickFile();
-  if (!file) { toast("No hi ha himnes"); return; }
-  state.currentFile = file;
-  audio.src = file;
-  audio.volume = state.volume / 100;
-  try { audio.currentTime = 0; } catch (_) {}
-  audio.play()
-    .then(() => { state.playing = true; render(); })
-    .catch(() => { state.playing = false; render(); toast("Torna a prémer GOL per activar el so"); });
-}
-
-function stopGoal() {
-  audio.pause();
-  try { audio.currentTime = 0; } catch (_) {}
-  state.playing = false;
-  state.currentFile = null;
-  render();
-}
-
-audio.addEventListener("ended", () => {
-  state.playing = false;
-  state.currentFile = null;
-  render();
-});
 
 /* ------------------------------------------------------------------ controls */
 $("#goal").addEventListener("click", () => {
@@ -137,7 +186,10 @@ $("#sound-select").addEventListener("change", (ev) => {
 
 $("#vol").addEventListener("input", (ev) => {
   state.volume = Number(ev.target.value);
-  audio.volume = state.volume / 100;
+  if (gain && actx) {
+    try { gain.gain.setTargetAtTime(state.volume / 100, actx.currentTime, 0.01); }
+    catch (_) { gain.gain.value = state.volume / 100; }
+  }
   ev.target.style.setProperty("--v", state.volume + "%");
   $("#vol-val").textContent = state.volume + "%";
 });
@@ -149,20 +201,35 @@ $("#help").addEventListener("click", () => {
 $("#help-panel").addEventListener("click", () => $("#help-panel").classList.remove("show"));
 
 /* ------------------------------------------------------------------ instal·lar (PWA) */
+const isStandalone = () =>
+  window.matchMedia("(display-mode: standalone)").matches ||
+  window.navigator.standalone === true;
+
+const isIOS = () =>
+  /iP(hone|ad|od)/.test(navigator.platform) ||
+  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+
 let deferredPrompt = null;
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  $("#install").hidden = false;
-});
-$("#install").addEventListener("click", async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  $("#install").hidden = true;
-});
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; });
 window.addEventListener("appinstalled", () => { $("#install").hidden = true; });
+
+$("#install").addEventListener("click", async () => {
+  buzz(10);
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    if (outcome === "accepted") $("#install").hidden = true;
+    return;
+  }
+  document.body.dataset.plat = isIOS() ? "ios" : "other";
+  $("#install-panel").classList.add("show");
+});
+$("#install-panel").addEventListener("click", () => $("#install-panel").classList.remove("show"));
+
+if (isStandalone()) $("#install").hidden = true;
+else $("#install").hidden = false;
 
 /* ------------------------------------------------------------------ pantalla encesa */
 let wakeLock = null;
@@ -178,31 +245,23 @@ async function keepAwake() {
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") keepAwake();
 });
-document.addEventListener("pointerdown", keepAwake);
+document.addEventListener("pointerdown", () => { audioResume(); keepAwake(); });
 keepAwake();
 
-/* ------------------------------------------------------------------ offline / SW */
+/* ------------------------------------------------------------------ offline */
 function updateFoot() {
-  const f = $("#foot");
-  if (!navigator.onLine) f.textContent = "sense connexió · funciona igual";
-  else f.textContent = "connecta el mòbil a l'altaveu · el so surt pel mòbil";
+  $("#foot").textContent = navigator.onLine
+    ? "connecta el mòbil a l'altaveu · el so surt pel mòbil"
+    : "sense connexió · funciona igual";
 }
 window.addEventListener("online", updateFoot);
 window.addEventListener("offline", updateFoot);
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").then((reg) => {
-    reg.addEventListener("updatefound", () => {
-      const nw = reg.installing;
-      nw && nw.addEventListener("statechange", () => {
-        if (nw.state === "installed" && navigator.serviceWorker.controller) {
-          toast("Actualització a punt — reobre l'app");
-        }
-      });
-    });
-  }).catch(() => {});
+  navigator.serviceWorker.register("sw.js").catch(() => {});
 }
 
 /* ------------------------------------------------------------------ arrencada */
 fillSelect();
 updateFoot();
+loadSounds();

@@ -247,7 +247,10 @@ body{
   gap:10px;text-align:center;padding:34px}
 .veil.show{display:flex}
 .veil p{font-size:18px;font-weight:800;letter-spacing:.05em}
-.veil small{color:var(--ink-dim);letter-spacing:.05em;line-height:1.75;font-size:13px}
+.veil small{color:var(--ink-dim);letter-spacing:.05em;line-height:1.75;font-size:13px;max-width:19em}
+.plat-ios,.plat-other{display:none}
+body[data-plat="ios"] .plat-ios{display:block}
+body[data-plat="other"] .plat-other{display:block}
 
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));
   transform:translate(-50%,18px);
@@ -256,9 +259,6 @@ body{
   transition:opacity .2s,transform .2s;max-width:88vw;text-align:center;
   box-shadow:0 12px 34px -12px #000}
 .toast.show{opacity:1;transform:translate(-50%,0)}
-
-body.offline .device{filter:grayscale(.45) brightness(.85)}
-body.offline .readout{color:#5c6a60;text-shadow:none}
 
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
