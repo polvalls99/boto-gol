@@ -7,7 +7,7 @@ const nameOf = (f) => (SOUNDS.find((s) => s.file === f) || {}).name || f || "";
 const state = {
   playing: false,
   random: true,
-  volume: 60,
+  volume: 80,
   activeFile: null,   // himne fix (quan NO és aleatori)
   currentFile: null,  // el que sona ara
   ready: false,       // sons descodificats a memòria
