@@ -70,6 +70,7 @@ writeFileSync(root + "card.html", `<!DOCTYPE html>
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }
   @media screen{ body{padding:24px} }
+  @media print{ body{background:#fff} }
 
   .card{
     position:relative;
@@ -78,6 +79,7 @@ writeFileSync(root + "card.html", `<!DOCTYPE html>
     display:flex;flex-direction:column;gap:2.4mm;
     color:var(--ivory);
     overflow:hidden;
+    border-radius:3.4mm;
     background:
       radial-gradient(circle at 3mm 3mm,#5a5d67 0 .35mm,#0e0f14 .45mm 1mm,transparent 1.05mm),
       radial-gradient(circle at calc(100% - 3mm) 3mm,#5a5d67 0 .35mm,#0e0f14 .45mm 1mm,transparent 1.05mm),
@@ -86,7 +88,7 @@ writeFileSync(root + "card.html", `<!DOCTYPE html>
       repeating-linear-gradient(115deg,rgba(255,255,255,.022) 0 1px,transparent 1px 4px),
       linear-gradient(165deg,var(--plate-1),var(--plate-2));
   }
-  @media screen{ .card{border-radius:3.2mm;box-shadow:0 24px 50px -18px #000,0 0 0 1px #34373f} }
+  @media screen{ .card{box-shadow:0 24px 50px -18px #000,0 0 0 1px #34373f} }
 
   .card::before{
     content:"";position:absolute;left:0;top:0;bottom:0;width:1.7mm;
