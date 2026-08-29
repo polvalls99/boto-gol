@@ -1,7 +1,7 @@
 /* Service worker — fa que el comandament funcioni sense connexió.
    Precacha tota l'app i els himnes; després serveix des de la memòria.
    Si canvies fitxers (o afegeixes himnes), puja el número de CACHE. */
-const CACHE = "boto-gol-v6";
+const CACHE = "boto-gol-v7";
 
 const ASSETS = [
   "./",

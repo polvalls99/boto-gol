@@ -168,14 +168,17 @@ window.addEventListener("appinstalled", () => { $("#install").hidden = true; });
 let wakeLock = null;
 async function keepAwake() {
   try {
-    if ("wakeLock" in navigator && document.visibilityState === "visible") {
-      wakeLock = await navigator.wakeLock.request("screen");
-    }
-  } catch (_) {}
+    if (!("wakeLock" in navigator)) return;
+    if (document.visibilityState !== "visible") return;
+    if (wakeLock && !wakeLock.released) return;
+    wakeLock = await navigator.wakeLock.request("screen");
+    wakeLock.addEventListener("release", () => { wakeLock = null; });
+  } catch (_) { /* el navegador no ho permet ara mateix */ }
 }
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") keepAwake();
 });
+document.addEventListener("pointerdown", keepAwake);
 keepAwake();
 
 /* ------------------------------------------------------------------ offline / SW */
