@@ -4,10 +4,11 @@
 <meta charset="utf-8">
 <title>Botó Gol — targeta</title>
 <style>
-  @page { size: 96mm 134mm; margin: 0; }
+  /* ID-1 (targeta de crèdit) en vertical: 53.98 × 85.60 mm */
+  @page { size: 53.98mm 85.6mm; margin: 0; }
   :root{
     --plate-1:#23252e; --plate-2:#111218;
-    --ivory:#f1ece0; --ink-dim:#8f94a2; --navy-lite:#9fb2e6;
+    --ivory:#f1ece0; --ink-dim:#9297a4; --navy-lite:#9fb2e6;
     --red:#e5342b; --red-hi:#ff7d70; --red-lo:#8f1610;
     --gold:#ffd23f; --sen-red:#e2231a; --sen-gold:#f2c500;
     --lcd-1:#0b1a0f; --lcd-2:#12241a; --lcd-ink:#7dffa0;
@@ -26,51 +27,51 @@
 
   .card{
     position:relative;
-    width:96mm;height:134mm;
-    padding:9mm 8mm 7mm;
-    display:flex;flex-direction:column;gap:4.5mm;
+    width:53.98mm;height:85.6mm;
+    padding:4.6mm 4mm 3.6mm;
+    display:flex;flex-direction:column;gap:2.4mm;
     color:var(--ivory);
     overflow:hidden;
     background:
-      radial-gradient(circle at 5.5mm 5.5mm,#5a5d67 0 .7mm,#0e0f14 .9mm 1.7mm,transparent 1.8mm),
-      radial-gradient(circle at calc(100% - 5.5mm) 5.5mm,#5a5d67 0 .7mm,#0e0f14 .9mm 1.7mm,transparent 1.8mm),
-      radial-gradient(circle at 5.5mm calc(100% - 5.5mm),#5a5d67 0 .7mm,#0e0f14 .9mm 1.7mm,transparent 1.8mm),
-      radial-gradient(circle at calc(100% - 5.5mm) calc(100% - 5.5mm),#5a5d67 0 .7mm,#0e0f14 .9mm 1.7mm,transparent 1.8mm),
+      radial-gradient(circle at 3mm 3mm,#5a5d67 0 .35mm,#0e0f14 .45mm 1mm,transparent 1.05mm),
+      radial-gradient(circle at calc(100% - 3mm) 3mm,#5a5d67 0 .35mm,#0e0f14 .45mm 1mm,transparent 1.05mm),
+      radial-gradient(circle at 3mm calc(100% - 3mm),#5a5d67 0 .35mm,#0e0f14 .45mm 1mm,transparent 1.05mm),
+      radial-gradient(circle at calc(100% - 3mm) calc(100% - 3mm),#5a5d67 0 .35mm,#0e0f14 .45mm 1mm,transparent 1.05mm),
       repeating-linear-gradient(115deg,rgba(255,255,255,.022) 0 1px,transparent 1px 4px),
       linear-gradient(165deg,var(--plate-1),var(--plate-2));
   }
-  @media screen{ .card{border-radius:5mm;box-shadow:0 30px 60px -20px #000,0 0 0 1px #34373f} }
+  @media screen{ .card{border-radius:3.2mm;box-shadow:0 24px 50px -18px #000,0 0 0 1px #34373f} }
 
   .card::before{
-    content:"";position:absolute;left:0;top:0;bottom:0;width:3mm;
-    background:repeating-linear-gradient(180deg,var(--sen-red) 0 5mm,var(--sen-gold) 5mm 10mm);
+    content:"";position:absolute;left:0;top:0;bottom:0;width:1.7mm;
+    background:repeating-linear-gradient(180deg,var(--sen-red) 0 2.8mm,var(--sen-gold) 2.8mm 5.6mm);
     box-shadow:inset -1px 0 2px rgba(0,0,0,.5);
   }
 
-  .head{display:flex;align-items:center;gap:3mm}
-  .badge{width:14mm;height:14mm;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+  .head{display:flex;align-items:center;gap:2mm;padding-left:.6mm}
+  .badge{width:8.4mm;height:8.4mm;object-fit:contain;filter:drop-shadow(0 .3mm .6mm rgba(0,0,0,.6))}
   .titles{flex:1;min-width:0}
-  .titles .t1{font-weight:900;letter-spacing:.1em;font-size:6.4mm;line-height:1}
-  .titles .t2{margin-top:1mm;font-size:2.5mm;letter-spacing:.32em;
+  .titles .t1{font-weight:900;letter-spacing:.09em;font-size:3.9mm;line-height:1}
+  .titles .t2{margin-top:.6mm;font-size:1.5mm;letter-spacing:.2em;
     color:var(--navy-lite);font-weight:800}
   .gol{
-    flex:0 0 auto;width:13mm;height:13mm;border-radius:50%;
+    flex:0 0 auto;width:7.6mm;height:7.6mm;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    color:#fff;font-weight:900;font-size:3.4mm;line-height:1;
+    color:#fff;font-weight:900;font-size:2mm;line-height:1;
     background:radial-gradient(circle at 38% 30%,var(--red-hi),var(--red) 55%,var(--red-lo));
-    box-shadow:0 0 0 .5mm #0b0c10,inset 0 .7mm 1mm rgba(255,255,255,.4),
-      inset 0 -1mm 1.6mm rgba(0,0,0,.4),0 1mm 2mm rgba(229,52,43,.5);
+    box-shadow:0 0 0 .3mm #0b0c10,inset 0 .4mm .6mm rgba(255,255,255,.4),
+      inset 0 -.6mm 1mm rgba(0,0,0,.4),0 .6mm 1.2mm rgba(229,52,43,.5);
   }
 
-  /* tira LCD — text centrat compensant el letter-spacing */
+  /* tira LCD — text-indent = letter-spacing perquè quedi centrat */
   .lcd{
-    position:relative;overflow:hidden;border-radius:2mm;padding:2.6mm 3mm;
-    text-align:center;text-indent:.22em;
+    position:relative;overflow:hidden;border-radius:1.2mm;padding:1.5mm 2mm;
+    text-align:center;text-indent:.14em;
     background:linear-gradient(180deg,var(--lcd-1),var(--lcd-2));
-    box-shadow:inset 0 .5mm 2mm #000,0 0 0 .3mm #2a2f2a;
+    box-shadow:inset 0 .3mm 1.2mm #000,0 0 0 .2mm #2a2f2a;
     font-family:var(--mono);color:var(--lcd-ink);
-    font-size:2.6mm;letter-spacing:.22em;
-    text-shadow:0 0 1.5mm rgba(125,255,160,.5);
+    font-size:1.55mm;letter-spacing:.14em;
+    text-shadow:0 0 1mm rgba(125,255,160,.5);
   }
   .lcd span{position:relative;z-index:1}
   .lcd::after{content:"";position:absolute;inset:0;
@@ -78,19 +79,19 @@
 
   .qrbox{
     flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
-    background:#fff;border-radius:3mm;padding:3.5mm;
-    box-shadow:inset 0 0 0 .3mm #d7d3c6,0 1mm 3mm rgba(0,0,0,.45);
+    background:#fff;border-radius:1.8mm;padding:2mm;
+    box-shadow:inset 0 0 0 .2mm #d7d3c6,0 .6mm 1.6mm rgba(0,0,0,.45);
   }
   .qrbox img{max-width:100%;max-height:100%;object-fit:contain}
 
-  .url{text-align:center;font-family:var(--mono);font-weight:600;font-size:3mm;
-    letter-spacing:.02em;color:var(--gold);word-break:break-all}
-  .rule{height:.3mm;background:linear-gradient(90deg,transparent,#3f424c 50%,transparent)}
-  .hint{text-align:center;font-size:2.5mm;line-height:1.55;color:var(--ink-dim);
-    max-width:64mm;margin:0 auto;text-wrap:balance}
+  .url{text-align:center;font-family:var(--mono);font-weight:600;font-size:1.85mm;
+    letter-spacing:.01em;color:var(--gold);word-break:break-all}
+  .rule{height:.25mm;background:linear-gradient(90deg,transparent,#3f424c 50%,transparent)}
+  .hint{text-align:center;font-size:1.5mm;line-height:1.5;color:var(--ink-dim);
+    max-width:40mm;margin:0 auto;text-wrap:balance}
   .hint b{color:var(--ivory)}
-  .foot{text-align:center;text-indent:.28em;font-size:2mm;font-weight:800;
-    text-transform:uppercase;letter-spacing:.28em;color:#5a5e69}
+  .foot{text-align:center;text-indent:.16em;font-size:1.3mm;font-weight:800;
+    text-transform:uppercase;letter-spacing:.16em;color:#63676f}
 </style>
 </head>
 <body>
@@ -110,7 +111,7 @@
 
     <div class="url">polvalls99.github.io/boto-gol</div>
     <div class="rule"></div>
-    <div class="hint">Connecta el m&ograve;bil a l'<b>altaveu Bluetooth</b>, puja el volum i prem <b>GOL</b></div>
+    <div class="hint">Connecta el m&ograve;bil a l'<b>altaveu Bluetooth</b> i prem <b>GOL</b></div>
     <div class="foot">Club Pat&iacute; Riudebitlles</div>
   </div>
 </body>
