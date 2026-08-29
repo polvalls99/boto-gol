@@ -1,4 +1,6 @@
 // Genera els icones PNG de la PWA sense dependències.  node scripts/gen-icons.mjs
+// Dibuixa el distintiu del CP Riudebitlles simplificat: anella blava, senyera
+// vertical, estic i bola. (El logo complet amb el nom corbat és a ../logo.svg.)
 import { deflateSync } from "node:zlib";
 import { writeFileSync, mkdirSync } from "node:fs";
 
@@ -26,40 +28,51 @@ const chunk = (type, data) => {
   return Buffer.concat([len, t, data, crc]);
 };
 
-const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+function segDist(px, py, ax, ay, bx, by) {
+  const dx = bx - ax, dy = by - ay;
+  const l2 = dx * dx + dy * dy;
+  let t = l2 ? ((px - ax) * dx + (py - ay) * dy) / l2 : 0;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
 
-function render(size) {
-  const bg = [14, 15, 19];        // #0e0f13
-  const ringC = [11, 12, 16];     // #0b0c10
-  const rInner = [255, 115, 103]; // #ff7367
-  const rMid = [229, 52, 43];     // #e5342b
-  const rDark = [143, 22, 16];    // #8f1610
-  const cx = size / 2, cy = size / 2;
-  const R = size * 0.34;
-  const ring = Math.max(2, size * 0.018);
-  const lx = cx - R * 0.32, ly = cy - R * 0.42; // punt de llum
+function render(N) {
+  const c = N / 2;
+  const R = 0.49 * N;        // vora del disc blanc
+  const rIn = 0.335 * N;     // cercle de la senyera
+  const rRingIn = 0.35 * N;  // interior de l'anella blava
+  const ax = 0.76 * N, ay = 0.24 * N, bx = 0.30 * N, by = 0.78 * N; // estic
+  const ballx = 0.245 * N, bally = 0.795 * N, ballr = 0.062 * N;    // bola
+  const stripeW = (2 * rIn) / 9;
+  const NAVY = [27, 42, 107], RED = [226, 35, 26], YEL = [242, 197, 0], WHITE = [255, 255, 255];
 
-  const raw = Buffer.alloc(size * (size * 4 + 1));
+  const raw = Buffer.alloc(N * (N * 4 + 1));
   let p = 0;
-  for (let y = 0; y < size; y++) {
-    raw[p++] = 0; // filtre
-    for (let x = 0; x < size; x++) {
-      const d = Math.hypot(x - cx, y - cy);
-      let col = bg, a = 255;
-      if (d <= R) {
-        const g = Math.min(1, Math.hypot(x - lx, y - ly) / (R * 1.55));
-        col = g < 0.5 ? mix(rInner, rMid, g / 0.5) : mix(rMid, rDark, (g - 0.5) / 0.5);
-      } else if (d <= R + ring) {
-        col = ringC;
+  for (let y = 0; y < N; y++) {
+    raw[p++] = 0;
+    for (let x = 0; x < N; x++) {
+      const d = Math.hypot(x - c, y - c);
+      let col = WHITE, a = 0;
+      if (d <= R) { a = 255; col = WHITE; }
+      if (d > rRingIn && d <= R) col = NAVY;
+      if (d <= rIn) {
+        const s = Math.floor((x - (c - rIn)) / stripeW);
+        col = (s % 2 === 0) ? RED : YEL;
       }
+      if (d > rIn - 2 && d <= rIn) col = NAVY;
+      const ds = segDist(x, y, ax, ay, bx, by);
+      if (ds < 0.085 * N) { col = NAVY; a = 255; }
+      if (ds < 0.052 * N) { col = WHITE; a = 255; }
+      const db = Math.hypot(x - ballx, y - bally);
+      if (db < ballr + 2) { col = WHITE; a = 255; }
+      if (db < ballr) { col = RED; a = 255; }
       raw[p++] = col[0]; raw[p++] = col[1]; raw[p++] = col[2]; raw[p++] = a;
     }
   }
 
   const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(size, 0); ihdr.writeUInt32BE(size, 4);
-  ihdr[8] = 8; ihdr[9] = 6; ihdr[10] = 0; ihdr[11] = 0; ihdr[12] = 0;
-
+  ihdr.writeUInt32BE(N, 0); ihdr.writeUInt32BE(N, 4);
+  ihdr[8] = 8; ihdr[9] = 6;
   return Buffer.concat([
     Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
     chunk("IHDR", ihdr),

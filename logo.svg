@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Club Patí Riudebitlles">
+  <defs>
+    <clipPath id="cpr-inner"><circle cx="100" cy="100" r="63"/></clipPath>
+    <path id="cpr-arc" d="M 41,148 A 78,78 0 1 1 159,148"/>
+  </defs>
+
+  <circle cx="100" cy="100" r="98" fill="#ffffff"/>
+  <circle cx="100" cy="100" r="82" fill="none" stroke="#1b2a6b" stroke-width="30"/>
+
+  <text fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-weight="700"
+        font-size="15" letter-spacing="1.1">
+    <textPath href="#cpr-arc" startOffset="50%" text-anchor="middle">CLUB&#160;PATÍ&#160;·&#160;RIUDEBITLLES</textPath>
+  </text>
+
+  <g clip-path="url(#cpr-inner)">
+    <rect x="34" y="30" width="132" height="140" fill="#f2c500"/>
+    <g fill="#e2231a">
+      <rect x="34"  y="30" width="14.7" height="140"/>
+      <rect x="63.4" y="30" width="14.7" height="140"/>
+      <rect x="92.7" y="30" width="14.7" height="140"/>
+      <rect x="122"  y="30" width="14.7" height="140"/>
+      <rect x="151.3" y="30" width="14.7" height="140"/>
+    </g>
+  </g>
+  <circle cx="100" cy="100" r="63" fill="none" stroke="#1b2a6b" stroke-width="4"/>
+
+  <path d="M150 50 L 82 129 Q 67 146 60 154 Q 71 165 87 157"
+        fill="none" stroke="#1b2a6b" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M150 50 L 82 129 Q 67 146 60 154 Q 71 165 87 157"
+        fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="56" cy="152" r="8" fill="#e2231a" stroke="#ffffff" stroke-width="2.5"/>
+</svg>

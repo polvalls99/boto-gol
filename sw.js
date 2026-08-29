@@ -1,7 +1,7 @@
 /* Service worker — fa que el comandament funcioni sense connexió.
    Precacha tota l'app i els himnes; després serveix des de la memòria.
    Si canvies fitxers (o afegeixes himnes), puja el número de CACHE. */
-const CACHE = "boto-gol-v10";
+const CACHE = "boto-gol-v11";
 
 const ASSETS = [
   "./",
@@ -10,7 +10,7 @@ const ASSETS = [
   "app.js",
   "sounds.js",
   "manifest.webmanifest",
-  "icons/icon.svg",
+  "logo.svg",
   "icons/icon-192.png",
   "icons/icon-512.png",
   "icons/apple-touch-icon.png",
