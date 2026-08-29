@@ -53,6 +53,7 @@ function render() {
 
   const v = $("#vol");
   if (document.activeElement !== v) v.value = state.volume;
+  v.style.setProperty("--v", state.volume + "%");
   $("#vol-val").textContent = Math.round(state.volume) + "%";
 }
 
@@ -137,6 +138,7 @@ $("#sound-select").addEventListener("change", (ev) => {
 $("#vol").addEventListener("input", (ev) => {
   state.volume = Number(ev.target.value);
   audio.volume = state.volume / 100;
+  ev.target.style.setProperty("--v", state.volume + "%");
   $("#vol-val").textContent = state.volume + "%";
 });
 
@@ -151,16 +153,16 @@ let deferredPrompt = null;
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  $(".install-block").hidden = false;
+  $("#install").hidden = false;
 });
 $("#install").addEventListener("click", async () => {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
   await deferredPrompt.userChoice;
   deferredPrompt = null;
-  $(".install-block").hidden = true;
+  $("#install").hidden = true;
 });
-window.addEventListener("appinstalled", () => { $(".install-block").hidden = true; });
+window.addEventListener("appinstalled", () => { $("#install").hidden = true; });
 
 /* ------------------------------------------------------------------ pantalla encesa */
 let wakeLock = null;
