@@ -33,12 +33,21 @@ let gain = null;
 let currentSrc = null;
 const buffers = new Map();      // file -> AudioBuffer
 
+// iOS: fes que el so ignori l'interruptor de silenci (com una app de música)
+function forcePlaybackSession() {
+  try {
+    if ("audioSession" in navigator) navigator.audioSession.type = "playback";
+  } catch (_) {}
+}
+forcePlaybackSession();
+
 function audioInit() {
   if (actx || !AC) return;
   actx = new AC();
   gain = actx.createGain();
   gain.gain.value = state.volume / 100;
   gain.connect(actx.destination);
+  forcePlaybackSession();
 }
 
 function audioResume() {
