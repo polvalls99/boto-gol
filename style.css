@@ -239,6 +239,8 @@ body{
   padding:8px 18px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;
   transition:transform .05s ease,background .2s;
 }
+.install[hidden]{display:none}
+[hidden]{display:none !important}
 .install .ico{font-size:12px}
 .install:active{transform:translateY(1px)}
 .foot{font-size:8px;letter-spacing:.2em;color:#4b4f59;text-transform:uppercase;text-align:center}
