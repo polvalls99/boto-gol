@@ -50,10 +50,10 @@ writeFileSync(root + "card.html", `<!DOCTYPE html>
 <meta charset="utf-8">
 <title>Botó Gol — targeta</title>
 <style>
-  @page { size: 96mm 145mm; margin: 0; }
+  @page { size: 96mm 134mm; margin: 0; }
   :root{
-    --ivory:#f1ece0; --ink-dim:#8f94a2;
-    --navy-lite:#9fb2e6;
+    --plate-1:#23252e; --plate-2:#111218;
+    --ivory:#f1ece0; --ink-dim:#8f94a2; --navy-lite:#9fb2e6;
     --red:#e5342b; --red-hi:#ff7d70; --red-lo:#8f1610;
     --gold:#ffd23f; --sen-red:#e2231a; --sen-gold:#f2c500;
     --lcd-1:#0b1a0f; --lcd-2:#12241a; --lcd-ink:#7dffa0;
@@ -72,9 +72,9 @@ writeFileSync(root + "card.html", `<!DOCTYPE html>
 
   .card{
     position:relative;
-    width:96mm;height:145mm;
-    padding:9mm 9mm 7mm;
-    display:flex;flex-direction:column;gap:4mm;
+    width:96mm;height:134mm;
+    padding:9mm 8mm 7mm;
+    display:flex;flex-direction:column;gap:4.5mm;
     color:var(--ivory);
     overflow:hidden;
     background:
@@ -83,7 +83,7 @@ writeFileSync(root + "card.html", `<!DOCTYPE html>
       radial-gradient(circle at 5.5mm calc(100% - 5.5mm),#5a5d67 0 .7mm,#0e0f14 .9mm 1.7mm,transparent 1.8mm),
       radial-gradient(circle at calc(100% - 5.5mm) calc(100% - 5.5mm),#5a5d67 0 .7mm,#0e0f14 .9mm 1.7mm,transparent 1.8mm),
       repeating-linear-gradient(115deg,rgba(255,255,255,.022) 0 1px,transparent 1px 4px),
-      linear-gradient(165deg,#23252e,#111218);
+      linear-gradient(165deg,var(--plate-1),var(--plate-2));
   }
   @media screen{ .card{border-radius:5mm;box-shadow:0 30px 60px -20px #000,0 0 0 1px #34373f} }
 
@@ -93,51 +93,61 @@ writeFileSync(root + "card.html", `<!DOCTYPE html>
     box-shadow:inset -1px 0 2px rgba(0,0,0,.5);
   }
 
-  /* capçalera centrada */
-  .head{display:flex;flex-direction:column;align-items:center;gap:1.6mm;padding-top:1mm}
-  .badge{width:17mm;height:17mm;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
-  .t1{text-align:center;position:relative;padding-bottom:2.6mm}
-  .t1 span{display:inline-block;font-weight:900;font-size:7mm;line-height:1;
-    letter-spacing:.12em;margin-right:-.12em}
-  .t1::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
-    width:11mm;height:.7mm;border-radius:1mm;background:var(--red)}
-  .t2{text-align:center}
-  .t2 span{display:inline-block;font-size:2.6mm;font-weight:800;color:var(--navy-lite);
-    letter-spacing:.3em;margin-right:-.3em}
+  .head{display:flex;align-items:center;gap:3mm}
+  .badge{width:14mm;height:14mm;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+  .titles{flex:1;min-width:0}
+  .titles .t1{font-weight:900;letter-spacing:.1em;font-size:6.4mm;line-height:1}
+  .titles .t2{margin-top:1mm;font-size:2.5mm;letter-spacing:.32em;
+    color:var(--navy-lite);font-weight:800}
+  .gol{
+    flex:0 0 auto;width:13mm;height:13mm;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:900;font-size:3.4mm;line-height:1;
+    background:radial-gradient(circle at 38% 30%,var(--red-hi),var(--red) 55%,var(--red-lo));
+    box-shadow:0 0 0 .5mm #0b0c10,inset 0 .7mm 1mm rgba(255,255,255,.4),
+      inset 0 -1mm 1.6mm rgba(0,0,0,.4),0 1mm 2mm rgba(229,52,43,.5);
+  }
 
-  /* tira LCD */
-  .lcd{position:relative;overflow:hidden;border-radius:2mm;padding:2.6mm 3mm;text-align:center;
+  /* tira LCD — text centrat compensant el letter-spacing */
+  .lcd{
+    position:relative;overflow:hidden;border-radius:2mm;padding:2.6mm 3mm;
+    text-align:center;text-indent:.22em;
     background:linear-gradient(180deg,var(--lcd-1),var(--lcd-2));
-    box-shadow:inset 0 .5mm 2mm #000,0 0 0 .3mm #2a2f2a}
-  .lcd span{display:inline-block;position:relative;z-index:1;font-family:var(--mono);
-    color:var(--lcd-ink);font-size:2.6mm;letter-spacing:.2em;margin-right:-.2em;
-    text-shadow:0 0 1.5mm rgba(125,255,160,.5)}
+    box-shadow:inset 0 .5mm 2mm #000,0 0 0 .3mm #2a2f2a;
+    font-family:var(--mono);color:var(--lcd-ink);
+    font-size:2.6mm;letter-spacing:.22em;
+    text-shadow:0 0 1.5mm rgba(125,255,160,.5);
+  }
+  .lcd span{position:relative;z-index:1}
   .lcd::after{content:"";position:absolute;inset:0;
     background:repeating-linear-gradient(rgba(0,0,0,.16) 0 1px,transparent 1px 3px)}
 
-  /* QR */
-  .qrbox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
+  .qrbox{
+    flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
     background:#fff;border-radius:3mm;padding:3.5mm;
-    box-shadow:inset 0 0 0 .3mm #d7d3c6,0 1mm 3mm rgba(0,0,0,.45)}
+    box-shadow:inset 0 0 0 .3mm #d7d3c6,0 1mm 3mm rgba(0,0,0,.45);
+  }
   .qrbox img{max-width:100%;max-height:100%;object-fit:contain}
 
   .url{text-align:center;font-family:var(--mono);font-weight:600;font-size:3mm;
-    color:var(--gold);word-break:break-all}
+    letter-spacing:.02em;color:var(--gold);word-break:break-all}
   .rule{height:.3mm;background:linear-gradient(90deg,transparent,#3f424c 50%,transparent)}
   .hint{text-align:center;font-size:2.5mm;line-height:1.55;color:var(--ink-dim);
-    max-width:66mm;margin:0 auto;text-wrap:balance}
+    max-width:64mm;margin:0 auto;text-wrap:balance}
   .hint b{color:var(--ivory)}
-  .foot{text-align:center}
-  .foot span{display:inline-block;font-size:2mm;font-weight:800;text-transform:uppercase;
-    letter-spacing:.26em;margin-right:-.26em;color:#5a5e69}
+  .foot{text-align:center;text-indent:.28em;font-size:2mm;font-weight:800;
+    text-transform:uppercase;letter-spacing:.28em;color:#5a5e69}
 </style>
 </head>
 <body>
   <div class="card">
     <div class="head">
       <img class="badge" src="${logo}" alt="CP Riudebitlles">
-      <div class="t1"><span>BOTÓ&nbsp;GOL</span></div>
-      <div class="t2"><span>CP&nbsp;RIUDEBITLLES</span></div>
+      <div class="titles">
+        <div class="t1">BOTÓ&nbsp;GOL</div>
+        <div class="t2">CP&nbsp;RIUDEBITLLES</div>
+      </div>
+      <div class="gol">GOL</div>
     </div>
 
     <div class="lcd"><span>ESCANEJA &middot; FES SONAR ELS GOLS</span></div>
@@ -147,7 +157,7 @@ writeFileSync(root + "card.html", `<!DOCTYPE html>
     <div class="url">${label}</div>
     <div class="rule"></div>
     <div class="hint">Connecta el m&ograve;bil a l'<b>altaveu Bluetooth</b>, puja el volum i prem <b>GOL</b></div>
-    <div class="foot"><span>Club Pat&iacute; Riudebitlles</span></div>
+    <div class="foot">Club Pat&iacute; Riudebitlles</div>
   </div>
 </body>
 </html>
