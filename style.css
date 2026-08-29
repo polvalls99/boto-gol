@@ -127,16 +127,19 @@ body{
 .goal-label{position:relative;z-index:2;font-weight:900;letter-spacing:.04em;
   font-size:clamp(30px,13vw,58px);
   text-shadow:0 2px 0 rgba(0,0,0,.32),0 0 26px rgba(255,255,255,.4)}
-.goal-ring{position:absolute;inset:14%;border-radius:50%;
-  border:2px dashed rgba(255,255,255,.42);opacity:0}
+.goal-ring{position:absolute;inset:10%;width:80%;height:80%;
+  overflow:visible;opacity:0;transform:scale(.92);
+  transition:opacity .25s ease,transform .25s ease;
+  filter:drop-shadow(0 0 4px rgba(255,255,255,.35))}
+.goal-btn.is-playing .goal-ring{opacity:.9;transform:scale(1);
+  animation:spin 3.2s linear infinite}
 .goal-btn:active{transform:translateY(6px);
   box-shadow:
     0 0 0 4px #14151b,0 0 0 6px #05060a,0 0 0 7px #2b2e39,
     0 8px 16px -10px rgba(229,52,43,.5),
     0 2px 0 #6d0f0a,
     inset 0 6px 16px rgba(255,255,255,.28),inset 0 -12px 20px rgba(0,0,0,.46)}
-.goal-btn.is-playing .goal-ring{opacity:1;animation:spin 3s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spin{to{rotate:360deg}}
 
 /* ---------------- taula de control ---------------- */
 .deck{
