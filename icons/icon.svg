@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0e0f13"/>
+  <circle cx="256" cy="256" r="150" fill="url(#g)"/>
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#0b0c10" stroke-width="24"/>
+  <text x="256" y="256" text-anchor="middle" dominant-baseline="central"
+        font-family="Segoe UI, system-ui, sans-serif" font-weight="900"
+        font-size="96" fill="#fff">GOL</text>
+  <defs>
+    <radialGradient id="g" cx="38%" cy="32%" r="75%">
+      <stop offset="0" stop-color="#ff6a5e"/>
+      <stop offset="45%" stop-color="#e5342b"/>
+      <stop offset="100%" stop-color="#8f1610"/>
+    </radialGradient>
+  </defs>
+</svg>

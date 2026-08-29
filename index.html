@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0e0f13">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Botó Gol">
+<title>Botó Gol</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="offline">
+
+<audio id="player" preload="auto" playsinline></audio>
+
+<main class="device">
+  <header class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">BOTÓ&nbsp;GOL</span>
+    <span class="grille" aria-hidden="true"></span>
+    <span class="brand-model">RC&#8209;1</span>
+  </header>
+
+  <section class="screen">
+    <div class="lamps">
+      <span class="lamp"><i id="led-so" class="led led-off"></i>SO</span>
+      <span class="lamp"><i id="led-rnd" class="led led-off"></i>RND</span>
+      <span class="lamp"><i id="led-air" class="led led-off"></i>GOL</span>
+    </div>
+    <div id="bt-name" class="readout">Carregant&hellip;</div>
+  </section>
+
+  <div class="stage">
+    <button id="goal" class="goal-btn" type="button">
+      <span class="goal-ring"></span>
+      <span class="goal-label">GOL</span>
+    </button>
+  </div>
+
+  <div class="transport">
+    <button id="stop" class="key key-stop" type="button">
+      <svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+      PARAR
+    </button>
+    <button id="random" class="key key-rnd" type="button" aria-pressed="true">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 7h4l10 10h4"/><path d="M17 3.5 21 7l-4 3.5"/>
+        <path d="M3 17h4l2.5-2.5"/><path d="M14.5 9.5 17 7"/><path d="M17 20.5 21 17l-4-3.5"/>
+      </svg>
+      RANDOM
+    </button>
+    <button id="help" class="key key-info" type="button" aria-label="Instruccions">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.5"/>
+      </svg>
+      INFO
+    </button>
+  </div>
+
+  <section class="block">
+    <div class="cap-row"><span class="cap">VOLUM</span><span id="vol-val" class="cap">60%</span></div>
+    <div class="fader-wrap">
+      <input id="vol" class="fader" type="range" min="0" max="100" value="60" aria-label="Volum">
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="cap-row"><span class="cap">HIMNE</span><span id="sound-mode" class="cap">ALEATORI</span></div>
+    <div class="select-wrap">
+      <select id="sound-select" class="lcd-select" aria-label="Tria l'himne">
+        <option value="__random__">&#127922;&nbsp; Aleatori</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="block install-block" hidden>
+    <button id="install" class="key key-install" type="button">
+      <span class="ico">&#8615;</span>
+      <span>INSTAL&middot;LA L'APP</span>
+    </button>
+  </section>
+
+  <footer class="foot" id="foot">connecta el mòbil a l'altaveu &middot; el so surt pel mòbil</footer>
+</main>
+
+<div id="help-panel" class="veil">
+  <p>El so surt <b>pel mòbil</b></p>
+  <small>
+    1. Connecta AQUEST mòbil a l'altaveu per Bluetooth<br>
+    (Ajustos &rarr; Bluetooth &rarr; l'altaveu)<br><br>
+    2. Puja el volum del mòbil<br><br>
+    3. Prem GOL. Torna a prémer GOL o PARAR per aturar.<br><br>
+    Un cop oberta amb connexió, funciona sense internet.
+  </small>
+  <small style="opacity:.6;margin-top:14px">toca per tancar</small>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="sounds.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
