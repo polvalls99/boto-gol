@@ -210,9 +210,19 @@ const isIOS = () =>
   /iPad|iPhone|iPod/.test(navigator.userAgent) ||
   (navigator.userAgent.includes("Mac") && "ontouchend" in document);
 
+const INSTALLED_KEY = "botogol.installed";
+function markInstalled() { try { localStorage.setItem(INSTALLED_KEY, "1"); } catch (_) {} }
+function isInstalled() {
+  if (isStandalone()) return true;
+  try { return localStorage.getItem(INSTALLED_KEY) === "1"; } catch (_) { return false; }
+}
+function refreshInstallUI() { $("#install").hidden = isInstalled(); }
+
+if (isStandalone()) markInstalled();
+
 let deferredPrompt = null;
-window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; });
-window.addEventListener("appinstalled", () => { $("#install").hidden = true; });
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; refreshInstallUI(); });
+window.addEventListener("appinstalled", () => { markInstalled(); refreshInstallUI(); });
 
 $("#install").addEventListener("click", async () => {
   buzz(10);
@@ -220,7 +230,7 @@ $("#install").addEventListener("click", async () => {
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     deferredPrompt = null;
-    if (outcome === "accepted") $("#install").hidden = true;
+    if (outcome === "accepted") { markInstalled(); refreshInstallUI(); }
     return;
   }
   document.body.dataset.plat = isIOS() ? "ios" : "other";
@@ -228,8 +238,10 @@ $("#install").addEventListener("click", async () => {
 });
 $("#install-panel").addEventListener("click", () => $("#install-panel").classList.remove("show"));
 
-if (isStandalone()) $("#install").hidden = true;
-else $("#install").hidden = false;
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") refreshInstallUI();
+});
+refreshInstallUI();
 
 /* ------------------------------------------------------------------ pantalla encesa */
 let wakeLock = null;
